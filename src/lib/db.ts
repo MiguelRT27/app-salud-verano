@@ -208,3 +208,101 @@ function calcMacros(food: FoodItem, grams: number): Macros {
   };
 }
 
+// Calcular macros totales de una comida
+export async function calcTotalMacrosForMeal(meal: Meal): Promise<Macros> {
+  const db = await dbPromise;
+  const total: Macros = {
+    kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, salt: 0
+  };
+
+  for (const item of meal.items) {
+    if (item.quantityGrams <= 0) continue; 
+
+    const food = await db.get('foodItems', item.foodId);
+    if (!food) continue;
+
+    const macros = calcMacros(food, item.quantityGrams);
+
+    total.kcal += macros.kcal;
+    total.protein += macros.protein;
+    total.carbs += macros.carbs;
+    total.fat += macros.fat;
+    total.fiber += macros.fiber;
+    total.salt += macros.salt;
+  }
+
+  return total;
+}
+
+// Obtener macros diarios totales
+export async function getDailyMacros(date: string): Promise<Macros> {
+  const meals = await searchMealsByDate(date);
+  const foodItems = await getFoodItems(); // Usamos esto para resolver los foodId
+
+  const macros: Macros = {
+    kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, salt: 0
+  };
+
+  for (const meal of meals) {
+    for (const item of meal.items) {
+      if (item.quantityGrams <= 0) continue;
+      const food = foodItems.find(f => f.id === item.foodId);
+      if (food) {
+        const itemMacros = calcMacros(food, item.quantityGrams);
+        macros.kcal += itemMacros.kcal;
+        macros.protein += itemMacros.protein;
+        macros.carbs += itemMacros.carbs;
+        macros.fat += itemMacros.fat;
+        macros.fiber += itemMacros.fiber;
+        macros.salt += itemMacros.salt;
+      }
+    }
+  }
+
+  return macros;
+}
+
+// Obtener macros semanales totales
+export async function getWeeklyMacros(endDate: string): Promise<Macros> {
+  const end = new Date(endDate);
+  const macrosTotal: Macros = {
+    kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, salt: 0
+  };
+
+  for (let i = 6; i >= 0; i--) {
+    const currentDate = new Date(end);
+    currentDate.setDate(end.getDate() - i);
+    const isoDate = currentDate.toISOString().slice(0, 10); // YYYY-MM-DD
+
+    const dailyMacros = await getDailyMacros(isoDate);
+    macrosTotal.kcal += dailyMacros.kcal;
+    macrosTotal.protein += dailyMacros.protein;
+    macrosTotal.carbs += dailyMacros.carbs;
+    macrosTotal.fat += dailyMacros.fat;
+    macrosTotal.fiber += dailyMacros.fiber;
+    macrosTotal.salt += dailyMacros.salt;
+  }
+
+  return macrosTotal;
+}
+
+// Obtener macros diarios por día de la semana
+export async function getWeeklyMacrosByDay(endDate: string): Promise<
+  { date: string; macros: Macros }[]
+> {
+  const end = new Date(endDate);
+  const result: { date: string; macros: Macros }[] = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const currentDate = new Date(end);
+    currentDate.setDate(end.getDate() - i);
+    const isoDate = currentDate.toISOString().slice(0, 10); // YYYY-MM-DD
+
+    const dailyMacros = await getDailyMacros(isoDate);
+    result.push({ date: isoDate, macros: dailyMacros });
+  }
+
+  return result;
+}
+
+
