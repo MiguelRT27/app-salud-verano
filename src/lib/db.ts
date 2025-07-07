@@ -45,7 +45,7 @@ export enum MealType {
     Otro = 'otro',
     }
 
-interface Meal {
+export interface Meal {
   id?: number;            // auto-incremental
   userId?: number;        // opcional si hay usuarios en futuro
   datetime: string;       // ISO 8601 completo, ej: '2025-07-02T08:30:00Z'
@@ -195,7 +195,7 @@ export async function searchMealsByDate(date: string) {
 // MACROS
 
 
-function calcMacros(food: FoodItem, grams: number): Macros {
+export function calcMacros(food: FoodItem, grams: number): Macros {
   const factor = grams / 100;
 
   return {

@@ -1,3 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind forms;
+@import 'apexcharts/dist/apexcharts.css';
+
