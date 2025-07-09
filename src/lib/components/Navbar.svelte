@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { Home, Utensils, Dumbbell, Settings } from 'lucide-svelte';
+  import { Home, Utensils, Dumbbell, Settings, UserRound } from 'lucide-svelte';
   import { derived } from 'svelte/store';
 
   const currentPath = derived(page, ($page) => $page.url.pathname);
@@ -24,8 +24,8 @@
       </a>
     </li>
     <li>
-      <a href="/ajustes" class="navbar-link" class:active={$currentPath === '/ajustes'}>
-        <Settings class="w-6 h-6" />
+      <a href="/perfil" class="navbar-link" class:active={$currentPath === '/ajustes'}>
+        <UserRound class="w-6 h-6" />
       </a>
     </li>
   </ul>

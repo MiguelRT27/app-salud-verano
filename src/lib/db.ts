@@ -11,7 +11,7 @@ export enum FoodType {
   Otro = 'otro',
 }
 
-interface Macros {
+export interface Macros {
   kcal: number;
   protein: number;
   carbs: number;
@@ -286,20 +286,28 @@ export async function getWeeklyMacros(endDate: string): Promise<Macros> {
   return macrosTotal;
 }
 
-// Obtener macros diarios por día de la semana
-export async function getWeeklyMacrosByDay(endDate: string): Promise<
-  { date: string; macros: Macros }[]
+// Devuelve los macros diarios desde el lunes hasta el domingo de esta semana
+export async function getCurrentWeekMacros(): Promise<
+  { day: string; kcal: number }[]
 > {
-  const end = new Date(endDate);
-  const result: { date: string; macros: Macros }[] = [];
+  const now = new Date();
+  const dayOfWeek = now.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
 
-  for (let i = 6; i >= 0; i--) {
-    const currentDate = new Date(end);
-    currentDate.setDate(end.getDate() - i);
-    const isoDate = currentDate.toISOString().slice(0, 10); // YYYY-MM-DD
+  // Día lunes de esta semana
+  const monday = new Date(now);
+  const diffToMonday = (dayOfWeek + 6) % 7; // convierte 0(D)→6, 1(L)→0...
+  monday.setDate(now.getDate() - diffToMonday);
+  monday.setHours(0, 0, 0, 0);
 
-    const dailyMacros = await getDailyMacros(isoDate);
-    result.push({ date: isoDate, macros: dailyMacros });
+  const dayLabels = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  const result: { day: string; kcal: number }[] = [];
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + i);
+    const iso = date.toISOString().slice(0, 10);
+    const macros = await getDailyMacros(iso);
+    result.push({ day: dayLabels[i], kcal: macros.kcal });
   }
 
   return result;
