@@ -7,6 +7,7 @@
   export let fatGoal: number;
   export let fiberGoal: number;
   export let saltGoal: number;
+  export let showTitle = true;
 
   export let totalMacros: {
     kcal: number;
@@ -135,7 +136,9 @@
 </script>
 
 <div class="summary-card w-full max-w-md px-6 py-6">
+ {#if showTitle}
   <h2 class="text-white font-semibold mb-4">Resumen diario</h2>
+{/if}
   <div class="relative flex flex-col items-center gap-1">
     <span class="label-calories mb-1 select-none">Calorías</span>
     <div class="kcal-chart w-[160px] h-[160px]"></div>

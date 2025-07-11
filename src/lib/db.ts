@@ -37,12 +37,9 @@ interface MealItem {
 
 export enum MealType {
     Desayuno = 'desayuno',
-    Almuerzo = 'almuerzo',
     Comida = 'comida',
-    Merienda = 'merienda',
     Cena = 'cena',
-    Snack = 'snack',
-    Otro = 'otro',
+    Otros = 'otros',
     }
 
 export interface Meal {

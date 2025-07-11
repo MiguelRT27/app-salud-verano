@@ -14,7 +14,7 @@
       </a>
     </li>
     <li>
-      <a href="/comidas" class="navbar-link" class:active={$currentPath === '/comidas'}>
+      <a href="/comida" class="navbar-link" class:active={$currentPath === '/comida'}>
         <Utensils class="w-6 h-6" />
       </a>
     </li>
