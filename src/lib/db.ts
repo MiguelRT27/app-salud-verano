@@ -22,7 +22,7 @@ export interface Macros {
 
 
 // Representa un alimento con sus propiedades nutricionales por 100 gramos
-interface FoodItem { 
+export interface FoodItem { 
   id?: number;        // auto-incremental
   name: string;
   macros: Macros;
@@ -30,7 +30,7 @@ interface FoodItem {
 }
 
 // Representa un los gramos consumidos de un alimento de una comida
-interface MealItem { 
+export interface MealItem { 
   foodId: number;
   quantityGrams: number;
 }
