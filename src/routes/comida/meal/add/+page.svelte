@@ -18,12 +18,13 @@
 	let selectedFoodId: number | null = null;
 	let quantity = 100;
 
-	let addedItems: MealItem[] = [];
-	export let data: { mealType: string | null };
-	let mealTypeParam = data.mealType ?? '';
+	 let addedItems: MealItem[] = [];
+    export let data: { mealType: string | null };
+    let mealTypeParam = data.mealType;
 
-	// Variable editable para el select del tipo de comida
-	let selectedMealType: MealType = MealType.Desayuno;
+    // Variable editable para el select del tipo de comida. Puede ser null.
+    let selectedMealType: MealType | null = null;
+	
 
 	onMount(async () => {
 		foodItems = await getFoodItems();
@@ -62,6 +63,11 @@
 			alert('No puedes guardar una comida vacía.');
 			return;
 		}
+		
+        if (!selectedMealType) {
+            alert('Por favor, selecciona un tipo de comida.');
+            return;
+        }
 
 		const newMeal: Meal = {
 			datetime: new Date().toISOString(),
@@ -91,6 +97,7 @@
 		</select>
 
 		<h2 class="text-white text-base font-semibold mb-2">Buscar alimento</h2>
+		
 		<input
 			type="text"
 			bind:value={query}
@@ -98,26 +105,31 @@
 			class="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none mb-2"
 		/>
 
-		<select bind:value={selectedFoodId} class="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 mb-2">
+		<select bind:value={selectedFoodId} class="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 mb-4">
 			<option disabled selected value="">Selecciona un alimento</option>
 			{#each searchResults as food}
 				<option value={food.id}>{food.name}</option>
 			{/each}
 		</select>
 
-		<label class="text-sm text-gray-300 mb-1 block">Cantidad (g):</label>
+		<label for="quantityGrams" class="text-sm text-gray-300 mb-1 block mt-4">Cantidad (g):</label>
 		<input
+			id="quantityGrams"
 			type="number"
 			bind:value={quantity}
 			min="1"
-			class="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 mb-4"
+			class="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 mb-6"
 		/>
 
-		<div class="flex justify-between">
-			<button on:click={addItem} class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded font-semibold">
+		<div class="flex justify-between mt-4">
+
+			<a href="/comida/fooditems/add" class="text-sm text-blue-400 underline self-center">+ Nuevo alimento</a>
+
+			<button on:click={addItem} class="add-foodItem-button">
 				Añadir alimento
 			</button>
-			<a href="/comida/fooditems/add" class="text-sm text-blue-400 underline self-center">+ Nuevo alimento</a>
+
+		
 		</div>
 	</div>
 
@@ -164,6 +176,16 @@
 		font-size: 1rem;
 		font-weight: 600;
 		padding: 0.85rem 1.5rem;
+		border-radius: 0.75rem;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+		transition: background-color 0.2s ease, transform 0.1s ease;
+	}
+	.add-foodItem-button {
+		background-color: #4f46e5;
+		color: white;
+		font-size: .9rem;
+		font-weight: 600;
+		padding: 0.65rem 1.5rem;
 		border-radius: 0.75rem;
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 		transition: background-color 0.2s ease, transform 0.1s ease;

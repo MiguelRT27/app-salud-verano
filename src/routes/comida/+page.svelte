@@ -52,6 +52,11 @@
 	function handleAddFood(type: string) {
 		goto(`/comida/meal/add?type=${type}`);
 	}
+
+	function handleAddNewMeal() {
+        goto('/comida/meal/add');
+    }
+
 </script>
 
 <section class="flex min-h-screen flex-col items-center space-y-8 bg-black pt-8 font-sans text-white">
@@ -70,11 +75,12 @@
 		/>
 	</div>
 
-	<div class="add-meal-wrapper">
-		<button class="add-meal-button">
-			<Plus size={22} /> Añadir nueva comida
-		</button>
-	</div>
+	
+    <div class="add-meal-wrapper">
+        <button class="add-meal-button" on:click={handleAddNewMeal}>
+            <Plus size={22} /> Añadir nueva comida
+        </button>
+    </div>
 
 	{#each mealsByType as entry}
 		<div class="summary-card w-full max-w-md px-4 py-4">
